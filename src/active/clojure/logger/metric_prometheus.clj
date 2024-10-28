@@ -1,4 +1,7 @@
 (ns active.clojure.logger.metric-prometheus
+  "Functionality for rendering Prometheus metrics
+
+   For an example on how to use this, have a look at the /examples/prometheus folder."
   (:require [active.clojure.logger.metric-accumulator :as metric-accumulator]
             [active.clojure.logger.timed-metric :as timed-metrics]
             [active.clojure.logger.metric-prometheus-util :as util]
@@ -64,6 +67,13 @@
      (render-metric-sets sorted-metric-sets))))
 
 (defn wrap-prometheus-metrics-ring-handler
+  "Wraps a `/metrics` endpoint for Prometheus metrics around an existing [Ring handler](https://github.com/ring-clojure/ring/wiki/Getting-Started).
+
+  Args:
+  - `handler`: The original handler to wrap, typically responsible for other application routes.
+
+  Returns:
+  A new handler that intercepts requests to the '/metrics' endpoint, returning a text/plain HTTP response with all current metrics."
   [handler]
   (fn [req]
     (if (re-matches #"^/metrics" (:uri req))
